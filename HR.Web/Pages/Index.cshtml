@@ -1,0 +1,43 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Cestoné príkazy";
+}
+<div class="container">
+    <h1 class="mt-4">@ViewData["Title"]</h1>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Dátum Vytvorenia</th>
+                    <th>Účastník</th>
+                    <th>Miesto Začiatku</th>
+                    <th>Miesto Konca</th>
+                    <th>Dátum a Čas Začiatku</th>
+                    <th>Dátum a Čas Konca</th>
+                    <th>Stav</th>
+                    <th>Akcie</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prikaz in Model.CestovnePrikazy) {
+                    <tr>
+                        <td>@prikaz.CpId</td>
+                        <td>@prikaz.DatumVytvorenia.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@prikaz.UcastnikId</td>
+                        <td>@prikaz.MiestoZaciatkuMesto?.NazovMesta</td>
+                        <td>@prikaz.MiestoKoncaMesto?.NazovMesta</td>
+                        <td>@prikaz.DatumCasZaciatku.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@prikaz.DatumCasKonca.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@prikaz.Stav.NazovStavu</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" href="/Edit/@prikaz.CpId">Edit</a>
+                            <a class="btn btn-danger btn-sm" href="/Delete/@prikaz.CpId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
