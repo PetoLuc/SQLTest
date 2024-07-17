@@ -15,4 +15,8 @@
     <ProjectReference Include="..\HR.Dol\HR.Dol.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+
 </Project>

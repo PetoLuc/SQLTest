@@ -1,28 +1,92 @@
-﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Cestoné príkazy";
+﻿@page "/"
+@using HR.Web.Blazor.ViewModel
+@inject HomeViewModel Model
+@code{
+    private string? text;    
+    public string? Text {
+        get => text; 
+        set { 
+            value = text; 
+        }
+    }
+
+    protected override async Task OnInitializedAsync() {
+        await Model.LoadCestovnePrikazyAsync();      
+    }
+
+    private void HandleInput(ChangeEventArgs e) {
+        //searchTerm = e.Value.ToString();
+        // Call method to filter or search data based on updated searchTerm
+        //FilterData(searchTerm);
+    }
+    private void NameChanged(string value) {
+        //Contact.Name = value;
+    }
+    private async Task PerformSearch() {
+        //searchResult = await SearchService.FetchAsync(searchText);
+    }
+
+
+    private string? textInputMessage;
+    private string? textChangeMessage;
+    private void TextInput(ChangeEventArgs e) {
+        textInputMessage = $"Text Input, New Value: {e.Value.ToString()}";
+    }
+    private void TextChanged(ChangeEventArgs e) {
+        textChangeMessage = $"Text Changed, New Value: {e.Value.ToString()}";
+        // Do something with the changed text
+    }
+
 }
+<PageTitle>Home</PageTitle>
+
+
+<input class="form-control border"
+       type="search"
+       placeholder="Zadejte jméno, telefonní číslo nebo oddělení..."
+       id="example-search-input"
+       @oninput="TextInput"
+       @onchange="TextChanged">
+<div class="input-group-append">
+    <p>@textInputMessage</p>
+
+    <p>@textChangeMessage</p>
+</div>
+
 <div class="container">
     <div class="mb-3 d-flex justify-content-end">
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addUserModal">
-            Add user
+            Vytvor cestovný príkaz
         </button>
     </div>
+         <div class="mb-3">
+
+        <!-- Filters -->
+        
+        <input @bind="text" @bind:event="oninput" @onchange="@((ChangeEventArgs __e) => Text = __e?.Value?.ToString())" @bind:after="PerformSearch" />
+        @* <InputText id="filterText" placeholder="Search by employee" bind-Value="@Model.SearchTerm" ValueChanged="NameChanged" @oninput="HandleInput" ValueExpression="() => Model.SearchTerm" /> *@
+        
+        </div>
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Id</th>
                     <th>Dátum vytvorenia</th>
-                    <th>Účastník</th>
-                    <th>Miesto začiatku</th>
-                    <th>Miesto konca</th>
-                    <th>Dátum a čas Začiatku</th>
-                    <th>Dátum a čas Konca</th>
-                    <th>Stav</th>
-                    <th>Akcie</th>
+                    <th>Osobné číslo</th>
+                    <th>Meno</th>
+                    <th>Priezvisko</th>
+                    <th>Dátum narodenia</th>
+                    <th>RodneCislo</th>
+                    <th>Miesto začiatku mesto</th>
+                    <th>Miesto začiatku štát</th>
+                    <th>Miesto konca mesto</th>
+                    <th>Miesto konca štát</th>
+                    <th>Dátum a čas začiatku</th>
+                    <th>Dátum a čas konca</th>
+                    <th>Stav</th>                    
                 </tr>
             </thead>
             <tbody>
@@ -30,9 +94,15 @@
                     <tr>
                         <td>@prikaz.CpId</td>
                         <td>@prikaz.DatumVytvorenia</td>
-                        <td>@prikaz.UcastnikId</td>
+                        <td>@prikaz.Ucastnik?.OsobneCislo</td>
+                        <td>@prikaz.Ucastnik?.KrstneMeno</td>
+                        <td>@prikaz.Ucastnik?.Priezvisko</td>
+                        <td>@prikaz.Ucastnik?.DatumNarodenia</td>
+                        <td>@prikaz.Ucastnik?.RodneCislo</td>
                         <td>@prikaz.MiestoZaciatkuMesto?.NazovMesta</td>
+                        <td>@prikaz.MiestoZaciatkuMesto?.Stat</td>
                         <td>@prikaz.MiestoKoncaMesto?.NazovMesta</td>
+                        <td>@prikaz.MiestoKoncaMesto?.Stat</td>
                         <td>@prikaz.DatumCasZaciatku</td>
                         <td>@prikaz.DatumCasKonca</td>
                         <td>@prikaz.Stav.NazovStavu</td>
@@ -45,7 +115,7 @@
         </table>
     </div>
 
-    <form method="post">
+@*     <form method="post">
         <!-- Modal -->
         <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -96,6 +166,6 @@
             </div>
         </div>
      
-    </form>
+    </form> *@
 
 </div>

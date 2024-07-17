@@ -17,10 +17,10 @@ namespace HR.Dol {
         public required string UcastnikId { get; set; }
 
         [ColumnName("miesto_zaciatku")]
-        public int MiestoZaciatku { get; set; }
+        public int MiestoZaciatkuId { get; set; }
 
         [ColumnName("miesto_konca")]
-        public int MiestoKonca { get; set; }
+        public int MiestoKoncaId { get; set; }
 
         [ColumnName("datum_cas_zaciatku")]
         public DateTime DatumCasZaciatku { get; set; }
@@ -30,7 +30,8 @@ namespace HR.Dol {
 
         [ColumnName("stav_id")]
         public int StavId { get; set; }
-
+        
+        public Zamestnanec? Ucastnik { get; set; } 
         public Mesto? MiestoZaciatkuMesto { get; set; }
         public Mesto? MiestoKoncaMesto { get; set; }
         public Stav Stav { get; set; } = Stav.Vytvoreny;

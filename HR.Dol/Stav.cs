@@ -1,16 +1,12 @@
 ﻿using HR.Dol.Attributes;
 
-namespace HR.Dol {
-    [TableName("Stav")]
-    public class Stav {
-        [ColumnName("stav_id")]
-        public int StavId { get; private set; }
-
-        [ColumnName("kod_stavu")]
-        public string KodStavu { get; private set; }
-
-        [ColumnName("nazov_stavu")]
-        public string NazovStavu { get; private set; }
+namespace HR.Dol {    
+    public class Stav {        
+        public int StavId { get; set; }
+        
+        public string KodStavu { get; set; }
+        
+        public string NazovStavu { get; set; }
 
         private Stav(int id, string kod, string nazov) {
             StavId = id;
