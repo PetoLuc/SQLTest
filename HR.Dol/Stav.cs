@@ -1,6 +1,4 @@
-﻿using HR.Dol.Attributes;
-
-namespace HR.Dol {    
+﻿namespace HR.Dol {    
     public class Stav {        
         public int StavId { get; set; }
         

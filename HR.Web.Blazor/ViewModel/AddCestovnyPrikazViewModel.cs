@@ -1,7 +1,7 @@
 ﻿using HR.Dal.Repos.Contracts;
 using HR.Dol;
-using HR.Web.Blazor.Model;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace HR.Web.Blazor.ViewModel
 {
@@ -23,7 +23,12 @@ namespace HR.Web.Blazor.ViewModel
         public int StavId { get; set; } = Stav.Vytvoreny.StavId;
 
         [BindProperty]
-        public List<DopravaTypModel> DopravaList { get; set; }
+        public List<DopravaTyp> DopravaList { get; set; } = [];
+
+        public List<DopravaTyp> DopravaTypes { get; set; }
+
+        [BindProperty]
+        public int SelectedDopravaId { get; set; } = DopravaTyp.SluzobneAuto.DopravaTypId;
 
 
         private readonly IDopravaRepository _dopravaRepository;
@@ -31,15 +36,26 @@ namespace HR.Web.Blazor.ViewModel
         public AddCestovnyPrikazViewModel(IDopravaRepository dopravaRepository)
         {
             _dopravaRepository = dopravaRepository;
-
-            DopravaList = _dopravaRepository.GetAll().Select(d => 
-            new DopravaTypModel
-            {
-                DopravaTypId = d.DopravaTypId,
-                IsSelected = false,
-                KodTypu = d.KodTypu,
-                NazovTypu = d.NazovTypu
-            }).ToList();
+            DopravaTypes = [.. _dopravaRepository.GetAll()]; 
+            
         }
+
+        public void AddDoprava()
+        {
+            var dopravaType = DopravaTypes.FirstOrDefault(td => td.DopravaTypId == SelectedDopravaId);
+            if (dopravaType != null)
+            {
+                DopravaList.Add(dopravaType);
+            }
+        }
+
+        public void RemoveDoprava()
+        {
+            if (DopravaList.Count > 0)
+            {
+                DopravaList.RemoveAt(DopravaList.Count - 1);
+            }            
+        }
+
     }
 }

@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IConnectionStringProviderService, ConnectionStringProviderService>();
 builder.Services.AddScoped<ICestovnyPrikazRepository, CestovnyPrikazRepository>();
-builder.Services.AddScoped<IDopravaRepository, DopravaRepository>(); 
+builder.Services.AddScoped<IDopravaRepository, DopravaTypeRepository>(); 
 
 builder.Services.AddScoped<HomeViewModel>();
 builder.Services.AddTransient<AddCestovnyPrikazViewModel>();

@@ -1,17 +1,8 @@
-﻿using HR.Dol.Attributes;
-
-namespace HR.Dol {
-    [TableName("Doprava")]
-    public class Doprava {
-        [ColumnName("doprava_id")]
-        public int DopravaId { get; set; }
-
-        [ColumnName("cp_id")]
-        public int CpId { get; set; }
-
-        [ColumnName("doprava_typ_id")]
+﻿namespace HR.Dol {    
+    public class Doprava {        
+        public int DopravaId { get; set; }        
+        public int CpId { get; set; }        
         public int DopravaTypId { get; set; }
-
         public CestovnyPrikaz? CestovnyPrikaz { get; set; }
         public required DopravaTyp DopravaTyp { get; set; }
     }

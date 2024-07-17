@@ -1,6 +1,4 @@
-﻿using HR.Dol.Attributes;
-
-namespace HR.Dol {    
+﻿namespace HR.Dol {    
     public class DopravaTyp {        
         public int DopravaTypId { get; private set; }        
         public string KodTypu { get; private set; }        

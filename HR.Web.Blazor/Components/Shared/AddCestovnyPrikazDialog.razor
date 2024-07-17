@@ -1,55 +1,78 @@
 ﻿@using HR.Web.Blazor.ViewModel
 
-   <!-- Modal -->
+<!-- Modal -->
     ﻿<div class="modal @modalClass" tabindex="-1" role="dialog" style="display:@modalDisplay; overflow-y: auto;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pridaj cestovný výkaz</h1>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Pridaj cestovný výkaz</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <label class="form-label">Dátum a čas začiatku: </label>
+                    <InputDate Type="InputDateType.DateTimeLocal"  @bind-Value="Model.DatumCasZaciatku" />
                 </div>
-                <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Dátum a čas konca: </label>
+                    <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Model.DatumCasKonca" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Miesto začiatku</label>
+                    <input type="text" class="form-control" @bind="Model.MiestoZaciatkuMestoId" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Miesto konca</label>
+                    <input type="text" class="form-control" @bind="Model.MiestoKoncaMestoId" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Stav</label>
+                    <input type="text" class="form-control" @bind="Model.StavId" />
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Dátum a čas začiatku</label>
-                        <input class="form-control" @bind="Model.DatumCasZaciatku" asp-format="{0:yyyy-MM-ddTHH:mm}" />
-                    </div>
+                <div class="form-group">                   
 
-                    <div class="mb-3">
-                        <label class="form-label">Dátum a čas konca</label>
-                        <input class="form-control" @bind="Model.DatumCasKonca" asp-format="{0:yyyy-MM-ddTHH:mm}" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Miesto začiatku</label>
-                        <input type="text" class="form-control" @bind="Model.MiestoZaciatkuMestoId" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Miesto konca</label>
-                        <input type="text" class="form-control" @bind="Model.MiestoKoncaMestoId" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Stav</label>
-                        <input type="text" class="form-control" @bind="Model.StavId" />
-                    </div>
-                    <div class="form-group">
-                        @foreach (var dopravaTyp in Model.DopravaList)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="@dopravaTyp.DopravaTypId" @bind="dopravaTyp.IsSelected">
-                                <label class="form-check-label" for="@dopravaTyp.DopravaTypId">
+                    @if (Model.DopravaList.Any())
+                    {
+                        <h4>Zvolené druhy dopravy</h4>
+                        <ul class="list-group">
+                            @foreach (var doprava in Model.DopravaList)
+                            {
+                                <li class="list-group-item">
+                                    @doprava.NazovTypu (@doprava.KodTypu)
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <h4>Nie je vybraný žiadny druh dopravy, pridaj</h4>
+                    }
+                    <hr>
+                        <h5>Vyber druh dopravy</h5>
+                        <select id="dopravaSelect" class="form-control"  @bind="Model.SelectedDopravaId">
+                            @foreach (var dopravaTyp in Model.DopravaTypes)
+                            {
+                                <option value="@dopravaTyp.DopravaTypId">
                                     @dopravaTyp.NazovTypu (@dopravaTyp.KodTypu)
-                                </label>
-                            </div>
-                        }
-                    </div>
+                                </option>
+                            }
+                        </select>
+                    
+                   
+                    <button class="btn btn-dark mt-3" @onclick="AddDopravaClick">Pridaj typ dopravy</button>
+                    <button class="btn btn-dark mt-3" @onclick="DelDopravaClick">Vymaž posledný typ dopravy</button>
                 </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @onclick="Close" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" @onclick="@SaveClick" class="btn btn-dark">Add</button>
-                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" @onclick="@SaveClick" class="btn btn-dark">Add</button>
+                <button type="button" class="btn btn-secondary" @onclick="Close" data-bs-dismiss="modal">Close</button>                
             </div>
         </div>
-    </div>    
+    </div>
+</div>
 
 
 
@@ -62,9 +85,17 @@
     private string modalDisplay = "none;";
     private string modalClass = string.Empty;
     private bool showBackdrop = false;
-    
+
     @inject AddCestovnyPrikazViewModel Model
-    
+
+    private void AddDopravaClick()
+    {
+        Model.AddDoprava();
+    }
+    private void DelDopravaClick()
+    {
+        Model.RemoveDoprava();
+    }
 
     private void SaveClick()
     {

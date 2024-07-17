@@ -14,4 +14,8 @@
     <None Include="Components\Shared\AddCestovnyPrikazDialog.razor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Model\" />
+  </ItemGroup>
+
 </Project>
