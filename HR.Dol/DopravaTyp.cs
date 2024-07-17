@@ -1,15 +1,9 @@
 ﻿using HR.Dol.Attributes;
 
-namespace HR.Dol {
-    [TableName("DopravaTyp")]
-    public class DopravaTyp {
-        [ColumnName("doprava_typ_id")]
-        public int DopravaTypId { get; private set; }
-
-        [ColumnName("kod_typu")]
-        public string KodTypu { get; private set; }
-
-        [ColumnName("nazov_typu")]
+namespace HR.Dol {    
+    public class DopravaTyp {        
+        public int DopravaTypId { get; private set; }        
+        public string KodTypu { get; private set; }        
         public string NazovTypu { get; private set; }
 
         private DopravaTyp(int id, string kod, string nazov) {

@@ -1,0 +1,152 @@
+﻿@page "/"
+@using HR.Web.Blazor.WASM.Model.ViewModel
+
+@inject HomeViewModel Model
+@code {
+    private string? text;
+    public string? Text
+    {
+        get => text;
+        set
+        {
+            value = text;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Model.LoadCestovnePrikazyAsync();
+    }
+
+
+    private string? textInputMessage;        
+    private void TextChanged(ChangeEventArgs e)
+    {
+        textInputMessage = $"Text Changed, New Value: {e.Value.ToString()}";
+        // Do something with the changed text
+    }
+
+}
+<PageTitle>Home</PageTitle>
+
+
+
+
+<div class="container">
+    <div class="mb-3 d-flex justify-content-end">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            Vytvor cestovný príkaz
+        </button>
+    </div>
+    <div class="mb-3">
+
+        <!-- Filters -->
+
+        <input type="search" placeholder="Zadejte akýkoľvek identifikačný údaj zamestnanca" id="search-input" @oninput="TextChanged" @onchange="TextChanged">
+        <div class="input-group-append">            
+            <p>@textInputMessage</p>
+        </div>        
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Dátum vytvorenia</th>
+                    <th>Osobné číslo</th>
+                    <th>Meno</th>
+                    <th>Priezvisko</th>
+                    <th>Dátum narodenia</th>
+                    <th>RodneCislo</th>
+                    <th>Miesto začiatku mesto</th>
+                    <th>Miesto začiatku štát</th>
+                    <th>Miesto konca mesto</th>
+                    <th>Miesto konca štát</th>
+                    <th>Dátum a čas začiatku</th>
+                    <th>Dátum a čas konca</th>
+                    <th>Stav</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prikaz in Model.CestovnePrikazy)
+                {
+                    <tr>
+                        <td>@prikaz.CpId</td>
+                        <td>@prikaz.DatumVytvorenia</td>
+                        <td>@prikaz.Ucastnik?.OsobneCislo</td>
+                        <td>@prikaz.Ucastnik?.KrstneMeno</td>
+                        <td>@prikaz.Ucastnik?.Priezvisko</td>
+                        <td>@prikaz.Ucastnik?.DatumNarodenia</td>
+                        <td>@prikaz.Ucastnik?.RodneCislo</td>
+                        <td>@prikaz.MiestoZaciatkuMesto?.NazovMesta</td>
+                        <td>@prikaz.MiestoZaciatkuMesto?.Stat</td>
+                        <td>@prikaz.MiestoKoncaMesto?.NazovMesta</td>
+                        <td>@prikaz.MiestoKoncaMesto?.Stat</td>
+                        <td>@prikaz.DatumCasZaciatku</td>
+                        <td>@prikaz.DatumCasKonca</td>
+                        <td>@prikaz.Stav.NazovStavu</td>
+                        <td>
+                            <a class="btn btn-danger btn-sm" href="/Delete/@prikaz.CpId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @*     <form method="post">
+    <!-- Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h1 class="modal-title fs-5" id="exampleModalLabel">Add user</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+
+    <div class="mb-3">
+    <label class="form-label">Dátum a čas začiatku</label>
+    <input class="form-control" asp-for="AddCestovnyVykazRequest.DatumCasZaciatku" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+    </div>
+
+    <div class="mb-3">
+    <label class="form-label">Dátum a čas konca</label>
+    <input class="form-control" class="form-control" asp-for="AddCestovnyVykazRequest.DatumCasKonca" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+    </div>
+    <div class="mb-3">
+    <label class="form-label">Miesto začiatku</label>
+    <input type="text" class="form-control" asp-for="AddCestovnyVykazRequest.MiestoZaciatkuMesto" />
+    </div>
+    <div class="mb-3">
+    <label class="form-label">Miesto konca</label>
+    <input type="text" class="form-control" asp-for="AddCestovnyVykazRequest.MiestoKoncaMesto" />
+    </div>
+    <div class="mb-3">
+    <label class="form-label">Miesto konca</label>
+    <input type="text" class="form-control" asp-for="AddCestovnyVykazRequest.Stav" />
+    </div>
+    <div class="form-group">
+    @foreach (var dopravaTyp in Model.AddCestovnyVykazRequest.DopravaList) {
+    <div class="form-check">
+    <input class="form-check-input"  type="checkbox"  asp-for="@dopravaTyp.Selected" id="@dopravaTyp.DopravaTypId">
+    <label class="form-check-label" for="@dopravaTyp.DopravaTypId">
+    @dopravaTyp.NazovTypu (@dopravaTyp.KodTypu)
+    </label>
+    </div>
+    }
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-dark">Add</button>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    </form> *@
+
+</div>

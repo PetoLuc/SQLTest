@@ -1,4 +1,4 @@
-﻿namespace HR.Dal.Contracts
+﻿namespace HR.Dal.Services.Contracts
 {
     public interface IConnectionStringProviderService
     {

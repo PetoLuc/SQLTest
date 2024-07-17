@@ -1,6 +1,7 @@
-using HR.Dal.Contracts;
 using HR.Dal.Repos;
+using HR.Dal.Repos.Contracts;
 using HR.Dal.Services;
+using HR.Dal.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 

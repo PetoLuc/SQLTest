@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.Dol", "HR.Dol\HR.Dol.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.Web", "HR.Web\HR.Web.csproj", "{51BE7E62-B8C0-4807-990B-091AF25CDD35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HR.Web.Blazor", "HR.Web.Blazor\HR.Web.Blazor.csproj", "{2535FAAC-D4B2-48D6-8CE7-1208D1D29F4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.Web.Blazor", "HR.Web.Blazor\HR.Web.Blazor.csproj", "{2535FAAC-D4B2-48D6-8CE7-1208D1D29F4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,10 +1,11 @@
-using HR.Dal.Contracts;
+using HR.Dal.Repos.Contracts;
 using HR.Dol;
 using HR.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace HR.Web.Pages {
+namespace HR.Web.Pages
+{
     public class IndexModel(ILogger<IndexModel> logger, ICestovnyPrikazRepository cestovnyPrikazRepository) : PageModel {
         private readonly ILogger<IndexModel> _logger = logger;
         private readonly ICestovnyPrikazRepository _cestovnyPrikazRepository = cestovnyPrikazRepository;

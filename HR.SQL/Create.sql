@@ -5,7 +5,7 @@ GO
 USE CestovnePrikazyDB;
 
 -- Entita Zamestnanec
-CREATE TABLE CestovnePrikazyDB.dbo.Zamestnanec (
+CREATE TABLE Zamestnanec (
     osobne_cislo VARCHAR(10) PRIMARY KEY,
     krstne_meno VARCHAR(50) NOT NULL,
     priezvisko VARCHAR(50) NOT NULL,
@@ -13,8 +13,38 @@ CREATE TABLE CestovnePrikazyDB.dbo.Zamestnanec (
     rodne_cislo VARCHAR(11) NOT NULL
 );
 
+-- Create unique index
+CREATE UNIQUE INDEX UX_Zamestnanec_OsobneCislo ON Zamestnanec(osobne_cislo);
+
+-- Create non-unique indexes for other columns
+CREATE INDEX IX_Zamestnanec_KrstneMeno ON Zamestnanec(krstne_meno);
+CREATE INDEX IX_Zamestnanec_Priezvisko ON Zamestnanec(priezvisko);
+CREATE INDEX IX_Zamestnanec_DatumNarodenia ON Zamestnanec(datum_narodenia);
+CREATE INDEX IX_Zamestnanec_RodneCislo ON Zamestnanec(rodne_cislo);
+
+
+-- Create a Full-Text Catalog
+CREATE FULLTEXT CATALOG ftCatalog AS DEFAULT;
+GO
+
+-- Create a Full-Text Index
+CREATE FULLTEXT INDEX ON Zamestnanec
+(
+--The LCID for Slovak is 1051.
+    osobne_cislo Language 1051, 
+    krstne_meno Language 1051,
+    priezvisko Language 1051,
+    rodne_cislo Language 1051
+)
+KEY INDEX UX_Zamestnanec_OsobneCislo -- This should be the primary key index of the Zamestnanec table
+ON ftCatalog;
+GO
+
+
+
+
 -- Entita Mesto
-CREATE TABLE dbo.Mesto (
+CREATE TABLE Mesto (
     mesto_id INT IDENTITY(1,1) PRIMARY KEY,
     nazov_mesta VARCHAR(100) NOT NULL,
     stat VARCHAR(50) NOT NULL,
@@ -23,21 +53,21 @@ CREATE TABLE dbo.Mesto (
 );
 
 -- Číselníková entita Stav
-CREATE TABLE dbo.Stav (
-    stav_id INT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE Stav (
+    stav_id tinyint IDENTITY(1,1) PRIMARY KEY,
     kod_stavu VARCHAR(10) NOT NULL UNIQUE,
     nazov_stavu VARCHAR(20) NOT NULL UNIQUE
 );
 
 -- Číselníková entita DopravaTyp
-CREATE TABLE dbo.DopravaTyp (
-    doprava_typ_id INT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE DopravaTyp (
+    doprava_typ_id tinyint IDENTITY(1,1) PRIMARY KEY,
     kod_typu VARCHAR(10) NOT NULL UNIQUE,
     nazov_typu VARCHAR(20) NOT NULL UNIQUE
 );
 
 -- Entita CestovnyPrikaz
-CREATE TABLE dbo.CestovnyPrikaz (
+CREATE TABLE CestovnyPrikaz (
     cp_id INT IDENTITY(1,1) PRIMARY KEY,
     datum_vytvorenia DATETIME DEFAULT GETDATE(),
     ucastnik VARCHAR(10) NOT NULL,
@@ -53,7 +83,7 @@ CREATE TABLE dbo.CestovnyPrikaz (
 );
 
 -- Entita Doprava pre Cestovny Prikaz
-CREATE TABLE dbo.Doprava (
+CREATE TABLE Doprava (
     doprava_id INT IDENTITY(1,1) PRIMARY KEY,
     cp_id INT NOT NULL,
     doprava_typ_id INT NOT NULL,
@@ -66,7 +96,6 @@ CREATE INDEX idx_cp_ucastnik ON CestovnyPrikaz(ucastnik);
 CREATE INDEX idx_cp_miesto_zaciatku ON CestovnyPrikaz(miesto_zaciatku);
 CREATE INDEX idx_cp_miesto_konca ON CestovnyPrikaz(miesto_konca);
 CREATE INDEX idx_cp_stav_id ON CestovnyPrikaz(stav_id);
-
 CREATE INDEX idx_doprava_cp_id ON Doprava(cp_id);
 CREATE INDEX idx_doprava_doprava_typ_id ON Doprava(doprava_typ_id);
 

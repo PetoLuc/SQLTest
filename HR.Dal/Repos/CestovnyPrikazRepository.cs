@@ -1,17 +1,21 @@
-﻿using HR.Dal.Contracts;
+﻿using HR.Dal.Repos.Contracts;
+using HR.Dal.Services.Contracts;
 using HR.Dol;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace HR.Dal.Repos {
+namespace HR.Dal.Repos
+{
     public class CestovnyPrikazRepository(IConnectionStringProviderService connectionStirngProvider) : ICestovnyPrikazRepository {
 
         private readonly string _connectionString = connectionStirngProvider.ConnectionString;
 
-        public async Task<List<CestovnyPrikaz>> GetAsync() {
+        public async Task<List<CestovnyPrikaz>> GetAsync(string? employeeFilter = null)
+        {
+            var sanitizedFilter = string.IsNullOrWhiteSpace(employeeFilter) ? null : $"\"*{employeeFilter.Replace("'", "''")}*\"";
             var cestovnePrikazy = new List<CestovnyPrikaz>();
-
-            using (var connection = new SqlConnection(_connectionString)) {
+            using (var connection = new SqlConnection(_connectionString))
+            {
 
                 var query = @"SELECT cp.*, mz.nazov_mesta AS mz_nazov_mesta, mz.stat AS mz_stat, mz.zemepisna_sirka AS mz_zemepisna_sirka, mz.zemepisna_dlzka AS mz_zemepisna_dlzka,
                                 mk.nazov_mesta AS mk_nazov_mesta, mk.stat AS mk_stat, mk.zemepisna_sirka AS mk_zemepisna_sirka, mk.zemepisna_dlzka AS mk_zemepisna_dlzka,                                
@@ -21,13 +25,38 @@ namespace HR.Dal.Repos {
                              JOIN Mesto mk ON cp.miesto_konca = mk.mesto_id
                              JOIN Stav st ON cp.stav_id = st.stav_id
                              JOIN Zamestnanec z ON cp.ucastnik = z.osobne_cislo";
+
+                if (sanitizedFilter != null)
+                {
+                    //fulltext search and like search sample
+                    query = @$"{query} WHERE CONTAINS((z.osobne_cislo, z.krstne_meno, z.priezvisko, z.rodne_cislo), @filter)
+                        OR z.osobne_cislo LIKE @likeSearch 
+                        OR z.krstne_meno LIKE @likeSearch 
+                        OR z.priezvisko LIKE @likeSearch 
+                        OR z.rodne_cislo LIKE @likeSearch";
+                }
+
                 var command = new SqlCommand(query, connection);
+
+                //add sanitized parameter value
+                if (sanitizedFilter != null)
+                {
+                    //full text
+                    command.Parameters.AddWithValue("@filter", sanitizedFilter);
+
+                    //like
+                    string likeSearchFilter = $"%{employeeFilter}%";
+                    command.Parameters.AddWithValue("@likeSearch", likeSearchFilter);
+                }
+
                 await connection.OpenAsync();
                 using var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync()) {
+                while (await reader.ReadAsync())
+                {
                     cestovnePrikazy.Add(MapReaderToCestovnyPrikaz(reader));
                 }
             }
+            
             return cestovnePrikazy;
         }
 
