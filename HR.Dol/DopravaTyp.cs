@@ -1,10 +1,10 @@
 ﻿namespace HR.Dol {    
     public class DopravaTyp {        
-        public short DopravaTypId { get; private set; }        
+        public int DopravaTypId { get; private set; }        
         public string KodTypu { get; private set; }        
         public string NazovTypu { get; private set; }
 
-        private DopravaTyp(short id, string kod, string nazov) {
+        private DopravaTyp(int id, string kod, string nazov) {
             DopravaTypId = id;
             KodTypu = kod;
             NazovTypu = nazov;
@@ -26,6 +26,11 @@
             yield return Vlak;
             yield return Taxi;
             yield return Lietadlo;
+        }
+
+        public static DopravaTyp FindById(int id)
+        {
+            return GetAll()?.FirstOrDefault(dt => dt.DopravaTypId == id)?? throw new IndexOutOfRangeException($"{id}");
         }
     }
 }

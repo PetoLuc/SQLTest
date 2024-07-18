@@ -16,13 +16,7 @@ namespace HR.Dal.Repos
             command.Parameters.AddWithValue("@CpId", cpId);
             return await ReadRecordsAsync(command, MapReaderToDoprava);
         }
-
-        private static Doprava MapReaderToDoprava(SqlDataReader reader) => new()
-        {
-            DopravaId = reader.GetInt32("doprava_id"),
-            CpId = reader.GetInt32("cp_id"),
-            DopravaTypId = reader.GetInt32("doprava_typ_id"),
-        };
+    
 
         public async Task DeleteDopravaAsync(int cpId, SqlConnection connection, SqlTransaction transaction)
         {
@@ -54,6 +48,13 @@ namespace HR.Dal.Repos
             await sqlCommandDoprava.ExecuteNonQueryAsync();
 
         }
+
+        private static Doprava MapReaderToDoprava(SqlDataReader reader) => new()
+        {
+            DopravaId = reader.GetInt32("doprava_id"),
+            CpId = reader.GetInt32("cp_id"),
+            DopravaTypId = reader.GetInt32("doprava_typ_id"),
+        };
     }
 }
 

@@ -19,6 +19,7 @@ builder.Services.AddScoped<IZamestnanecRepository, ZamestnanecRepository>();
 
 builder.Services.AddScoped<HomeViewModel>();
 builder.Services.AddTransient<AddCestovnyPrikazViewModel>();
+builder.Services.AddTransient<UpdateCestovnyPrikazViewModel>();
 
 
 // Add services to the container.

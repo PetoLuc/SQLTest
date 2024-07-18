@@ -15,11 +15,13 @@
         await Model.LoadCestovnePrikazyAsync();
     }
     private AddCestovnyPrikazDialog? AddCestovnyPrikazDialog { get; set; }    
+    private UpdateCestovnyPrikazDialog? UpdateCestovnyPrikazDialog { get; set; }
 
 }
 <PageTitle>Home</PageTitle>
 
 <AddCestovnyPrikazDialog @ref="@AddCestovnyPrikazDialog" OnDataChangedModal="(async () => await Model.InitAsync())"></AddCestovnyPrikazDialog>
+<UpdateCestovnyPrikazDialog @ref="@UpdateCestovnyPrikazDialog" OnDataChangedModal="(async () => await Model.InitAsync())"></UpdateCestovnyPrikazDialog>
 <!-- Filters -->
 
 
@@ -77,9 +79,13 @@
                             <td>@prikaz.DatumCasZaciatku</td>
                             <td>@prikaz.DatumCasKonca</td>
                             <td>@prikaz.Stav.NazovStavu</td>
-                            <td>
-                                <a class="btn btn-danger btn-sm" @onclick="async () => await  Model.DeleteCestovnyPrikazAsync(prikaz.CpId)">Delete</a>
+                            <td>                       
+                             <a class="btn btn-info btn-sm" @onclick="() => UpdateCestovnyPrikazDialog.OpenAsync(prikaz.CpId)">Detail/Edit</a>
                             </td>
+                            <td>
+                                <a class="btn btn-danger btn-sm" @onclick="async() => await  Model.DeleteCestovnyPrikazAsync(prikaz.CpId)">Delete</a>
+                            </td>
+
                         </tr>
                     }
 

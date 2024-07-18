@@ -7,6 +7,7 @@ namespace HR.Dal.Repos.Contracts
         Task<List<CestovnyPrikaz>> GetFilteredAsync(string? employeeFilter = null);
         Task<List<CestovnyPrikaz>> GetByIdAsync(int cestovnyPrikazId);
         Task InsertAsync(CestovnyPrikaz cestovnyPrikaz, List<DopravaTyp> dopravaTypList);
+        Task UpdateAsync(CestovnyPrikaz cestovnyPrikaz, List<DopravaTyp> dopravaTypList);
         Task DeleteAsync(int cestovnyPrikazId);
     }
 }

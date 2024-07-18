@@ -1,5 +1,4 @@
 ﻿using HR.Dal.MsSql.Repos.Contracts;
-using HR.Dal.Repos;
 using HR.Dal.Repos.Contracts;
 using HR.Dol;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +9,7 @@ namespace HR.Web.Blazor.ViewModel
                                       IMestoRepository mestoRepository,
                                       IStavRepository stavRepository,
                                       IZamestnanecRepository zamestnanecRepository,
+                                      IDopravaRepository dopravaRepository,
                                       ICestovnyPrikazRepository cestovnyPrikazRepository)
     {        
 
@@ -49,28 +49,22 @@ namespace HR.Web.Blazor.ViewModel
 
         #endregion        
 
-        public async Task InitAsync(int cestovnyPrikazId)
-        {
-            CestovnyPrikazId = cestovnyPrikazId;
-
+        public async Task InitAsync()
+        {            
             var cestovnyPrikaz = await cestovnyPrikazRepository.GetByIdAsync(CestovnyPrikazId);
-            var firsCetovnyPrikaz = cestovnyPrikaz.FirstOrDefault();
-
-            if (firsCetovnyPrikaz == null)
-                throw new InvalidOperationException($"TODO cestovny prikaz not foud by {CestovnyPrikazId}");
+            var foundCestovnyPrikaz = cestovnyPrikaz.FirstOrDefault() ?? throw new InvalidOperationException($"TODO cestovny prikaz not foud by {CestovnyPrikazId}");
 
             MestoList = await mestoRepository.GetAllMestoForSelectAsync();
             ZamestnanecList = await zamestnanecRepository.GetAllZamestnanciAsync();
-            DopravaId = DopravaTyp.SluzobneAuto.DopravaTypId;
-            StavId = Stav.Vytvoreny.StavId;
-            MiestoZaciatkuMestoId = MestoList.FirstOrDefault()?.MestoId;
-            MiestoKoncaMestoId = MestoList.LastOrDefault()?.MestoId;
-            ZamestnanecId =ZamestnanecList.FirstOrDefault()?.OsobneCislo;
-            DopravaAddList = [];
-            StavList = stavRepository.GetAll();
-            
-            DopravaTypeList = [.. dopravaTypRepository.GetAll()];
-            
+            DopravaId =   DopravaTyp.SluzobneAuto.DopravaTypId;
+            StavId = foundCestovnyPrikaz.StavId;
+            MiestoZaciatkuMestoId = foundCestovnyPrikaz.MiestoZaciatkuId;
+            MiestoKoncaMestoId = foundCestovnyPrikaz.MiestoKoncaId;
+            ZamestnanecId =foundCestovnyPrikaz.UcastnikId;
+            var currDopravaList = await dopravaRepository.GetDopravaByCestovnyPrikazIdAsync(foundCestovnyPrikaz.CpId);
+            DopravaAddList = currDopravaList.Select(d => dopravaTypRepository.FindById(d.DopravaTypId)).ToList();
+            StavList = stavRepository.GetAll();            
+            DopravaTypeList = [.. dopravaTypRepository.GetAll()];            
         }
 
         public void AddDoprava()
@@ -93,8 +87,9 @@ namespace HR.Web.Blazor.ViewModel
         {
             if (ZamestnanecId != null && MiestoKoncaMestoId !=null && MiestoZaciatkuMestoId!=null)
             {
-                await cestovnyPrikazRepository.InsertAsync(new CestovnyPrikaz
+                await cestovnyPrikazRepository.UpdateAsync(new CestovnyPrikaz
                 {
+                    CpId = CestovnyPrikazId,
                     UcastnikId = ZamestnanecId!,
                     DatumCasKonca = DatumCasKonca,
                     DatumCasZaciatku = DatumCasZaciatku,
