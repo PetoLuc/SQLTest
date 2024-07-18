@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HR.Dal\HR.Dal.csproj" />
+    <Content Remove="Components\Shared\UpdateCestovnyPrikazDialog .razor" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HR.Dal\HR.Dal.MsSql.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\Shared\UpdateCestovnyPrikazDialog .razor" />
     <None Include="Components\Shared\AddCestovnyPrikazDialog.razor" />
   </ItemGroup>
 

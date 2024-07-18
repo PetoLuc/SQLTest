@@ -3,7 +3,7 @@ using HR.Dol;
 
 namespace HR.Dal.Repos
 {
-    public class DopravaTypeRepository : IDopravaRepository
+    public class DopravaTypRepository : IDopravaTypRepository
     {
         public List<DopravaTyp> GetAll() => DopravaTyp.GetAll().ToList();
     }

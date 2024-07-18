@@ -1,12 +1,12 @@
 ﻿namespace HR.Dol {    
     public class Stav {        
-        public int StavId { get; set; }
+        public short StavId { get; set; }
         
         public string KodStavu { get; set; }
         
         public string NazovStavu { get; set; }
 
-        private Stav(int id, string kod, string nazov) {
+        private Stav(short id, string kod, string nazov) {
             StavId = id;
             KodStavu = kod;
             NazovStavu = nazov;

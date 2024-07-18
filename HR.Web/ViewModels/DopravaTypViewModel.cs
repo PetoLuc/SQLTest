@@ -1,5 +1,4 @@
-﻿using HR.Dol.Attributes;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace HR.Web.ViewModels {
     

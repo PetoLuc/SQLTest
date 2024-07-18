@@ -1,38 +1,27 @@
-﻿using HR.Dol;
+﻿using HR.Dal.Repos.Contracts;
+using HR.Dal.Services.Contracts;
+using HR.Dol;
 using System.Data;
 using System.Data.SqlClient;
 
 namespace HR.Dal.Repos
 {
-    public class MestoRepository(string connectionString)
+    public class MestoRepository(IConnectionStringProviderService connectionStringProvider)
+        : RepositoryBase(connectionStringProvider), IMestoRepository
     {
-        private readonly string _connectionString = connectionString;
-
-        public List<Mesto> GetAllMesta()
+        public async Task<List<Mesto>> GetAllMestoForSelectAsync()
         {
-            List<Mesto> mestaList = [];
-
-            using (SqlConnection connection = new(_connectionString))
-            {
-                connection.Open();
-
-                string query = "SELECT mesto_id, nazov_mesta, stat, zemepisna_sirka, zemepisna_dlzka FROM Mesto";
-                using SqlCommand command = new(query, connection);
-                using SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    Mesto mesto = new()
-                    {
-                        MestoId = reader.GetInt32("mesto_id"),
-                        NazovMesta = reader.GetString("nazov_mesta"),
-                        Stat = reader.GetString("stat"),
-                        ZemepisnaSirka = reader.GetDecimal("zemepisna_sirka"),
-                        ZemepisnaDlzka = reader.GetDecimal("zemepisna_dlzka")
-                    };
-                    mestaList.Add(mesto);
-                }
-            }
-            return mestaList;
+            string query = "SELECT mesto_id, nazov_mesta, stat FROM Mesto";
+            using SqlCommand command = new(query);
+            return await ReadRecordsAsync(command, MapReaderToMestoForSelectOnly);
         }
+        private static Mesto MapReaderToMestoForSelectOnly(SqlDataReader reader) => new()
+        {
+            MestoId = reader.GetInt32("mesto_id"),
+            NazovMesta = reader.GetString("nazov_mesta"),
+            Stat = reader.GetString("stat"),
+           //ZemepisnaSirka = reader.GetDecimal("zemepisna_sirka"),
+           //ZemepisnaDlzka = reader.GetDecimal("zemepisna_dlzka")            
+        };
     }
 }

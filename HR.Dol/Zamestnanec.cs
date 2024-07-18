@@ -1,6 +1,9 @@
-﻿namespace HR.Dol {
+﻿using HR.Dol.Contracts;
+
+namespace HR.Dol {
     
-    public class Zamestnanec {        
+    public class Zamestnanec : IEntityMarker
+    {        
         public required string OsobneCislo { get; set; }
         
         public required string KrstneMeno { get; set; }

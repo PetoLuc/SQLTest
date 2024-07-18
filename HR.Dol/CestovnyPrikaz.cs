@@ -1,34 +1,26 @@
-﻿using HR.Dol.Attributes;
+﻿using HR.Dol.Contracts;
 
 namespace HR.Dol {
-
-    [TableName("CestovnyPrikaz")]
-    public class CestovnyPrikaz {
-        [ColumnName("cp_id")]
+    
+    public class CestovnyPrikaz: IEntityMarker
+    {
         public int CpId { get; set; }
-
-        [ColumnName("datum_vytvorenia")]
+        
         public DateTime DatumVytvorenia { get; set; }
 
         //[ColumnName("ucastnik")]
         //public required Zamestnanec? Ucastnik { get; set; }
-
-        [ColumnName("ucastnik")]
+        
         public required string UcastnikId { get; set; }
-
-        [ColumnName("miesto_zaciatku")]
+        
         public int MiestoZaciatkuId { get; set; }
-
-        [ColumnName("miesto_konca")]
+        
         public int MiestoKoncaId { get; set; }
-
-        [ColumnName("datum_cas_zaciatku")]
+        
         public DateTime DatumCasZaciatku { get; set; }
 
-        [ColumnName("datum_cas_konca")]
         public DateTime DatumCasKonca { get; set; }
-
-        [ColumnName("stav_id")]
+        
         public int StavId { get; set; }
         
         public Zamestnanec? Ucastnik { get; set; } 

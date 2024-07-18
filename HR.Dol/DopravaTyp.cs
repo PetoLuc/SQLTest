@@ -1,10 +1,10 @@
 ﻿namespace HR.Dol {    
     public class DopravaTyp {        
-        public int DopravaTypId { get; private set; }        
+        public short DopravaTypId { get; private set; }        
         public string KodTypu { get; private set; }        
         public string NazovTypu { get; private set; }
 
-        private DopravaTyp(int id, string kod, string nazov) {
+        private DopravaTyp(short id, string kod, string nazov) {
             DopravaTypId = id;
             KodTypu = kod;
             NazovTypu = nazov;

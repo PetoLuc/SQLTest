@@ -25,7 +25,7 @@ namespace HR.Web.Pages
         };
 
         public async Task<IActionResult> OnGet() {
-            CestovnePrikazy = await _cestovnyPrikazRepository.GetAsync();
+            CestovnePrikazy = await _cestovnyPrikazRepository.GetFilteredAsync();
             return Page();
         }
         public async Task<IActionResult> OnPost() {

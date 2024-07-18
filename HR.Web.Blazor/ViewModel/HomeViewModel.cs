@@ -6,7 +6,6 @@ namespace HR.Web.Blazor.ViewModel
 {
     public class HomeViewModel(ICestovnyPrikazRepository cestovnyPrikazRepository)
     {
-
         private readonly ICestovnyPrikazRepository _cestovnyPrikazRepository = cestovnyPrikazRepository;
 
         [BindProperty]
@@ -19,7 +18,13 @@ namespace HR.Web.Blazor.ViewModel
         }
 
         public async Task LoadCestovnePrikazyAsync() {
-            CestovnePrikazy = await _cestovnyPrikazRepository.GetAsync(SearchTerm);
+            CestovnePrikazy = await _cestovnyPrikazRepository.GetFilteredAsync(SearchTerm);
+        }
+
+        public async Task DeleteCestovnyPrikazAsync(int cestovnyPrikazId)
+        {
+            await _cestovnyPrikazRepository.DeleteAsync(cestovnyPrikazId);            
+            await InitAsync();
         }
     }
 }

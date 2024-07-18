@@ -1,9 +1,12 @@
 ﻿using HR.Dol;
+using System.Data.SqlClient;
 
-namespace HR.Dal.Repos.Contracts
+namespace HR.Dal.MsSql.Repos.Contracts
 {
     public interface IDopravaRepository
     {
-        List<DopravaTyp> GetAll();
+        Task<List<Doprava>> GetDopravaByCestovnyPrikazIdAsync(int cpId);
+        Task DeleteDopravaAsync(int cpId, SqlConnection connection, SqlTransaction transaction);
+        Task InsertDopravaForCestovnyPrikazAsync(int cestovnyPrikazId, SqlConnection connection, SqlTransaction transaction, List<DopravaTyp> dopravaTypList);        
     }
 }

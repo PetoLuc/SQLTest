@@ -4,7 +4,7 @@
 @using HR.Web.Blazor.Components.Shared
 @using HR.Web.Blazor.ViewModel
 
-@inject HomeViewModel Model
+@inject HomeViewModel Model;
 @code {
     protected override async Task OnInitializedAsync()
     {
@@ -14,19 +14,19 @@
     {
         await Model.LoadCestovnePrikazyAsync();
     }
-    private AddCestovnyPrikazDialog? AddCestovnyPrikazDialog { get; set; }
+    private AddCestovnyPrikazDialog? AddCestovnyPrikazDialog { get; set; }    
 
 }
 <PageTitle>Home</PageTitle>
 
-<AddCestovnyPrikazDialog @ref="@AddCestovnyPrikazDialog"></AddCestovnyPrikazDialog>
+<AddCestovnyPrikazDialog @ref="@AddCestovnyPrikazDialog" OnDataChangedModal="(async () => await Model.InitAsync())"></AddCestovnyPrikazDialog>
 <!-- Filters -->
 
 
 <div class="container">
     <div class="mb-3 d-flex justify-content-end">
         <!-- Button trigger modal -->
-        <button @onclick="() => AddCestovnyPrikazDialog.Open()" class="btn btn-dark">
+        <button @onclick="() => AddCestovnyPrikazDialog.OpenAsync()" class="btn btn-dark">
             Vytvor cestovný príkaz
         </button>
     </div>
@@ -43,8 +43,7 @@
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
-                    <tr>
-                        <th>Id</th>
+                    <tr>                        
                         <th>Dátum vytvorenia</th>
                         <th>Osobné číslo</th>
                         <th>Meno</th>
@@ -64,8 +63,7 @@
 
                     @foreach (var prikaz in Model.CestovnePrikazy)
                     {
-                        <tr>
-                            <td>@prikaz.CpId</td>
+                        <tr>                            
                             <td>@prikaz.DatumVytvorenia</td>
                             <td>@prikaz.Ucastnik?.OsobneCislo</td>
                             <td>@prikaz.Ucastnik?.KrstneMeno</td>
@@ -80,7 +78,7 @@
                             <td>@prikaz.DatumCasKonca</td>
                             <td>@prikaz.Stav.NazovStavu</td>
                             <td>
-                                <a class="btn btn-danger btn-sm" href="/Delete/@prikaz.CpId">Delete</a>
+                                <a class="btn btn-danger btn-sm" @onclick="async () => await  Model.DeleteCestovnyPrikazAsync(prikaz.CpId)">Delete</a>
                             </td>
                         </tr>
                     }

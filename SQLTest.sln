@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.Dal", "HR.Dal\HR.Dal.csproj", "{08D386FF-4D82-41D7-B26B-B774B3C58944}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.Dal.MsSql", "HR.Dal\HR.Dal.MsSql.csproj", "{08D386FF-4D82-41D7-B26B-B774B3C58944}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HR.Sql", "HR.SQL\HR.Sql.csproj", "{54B049C5-C124-4AAB-9DFC-36AF41C64619}"
 EndProject
