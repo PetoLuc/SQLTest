@@ -8,6 +8,7 @@ using System.Text;
 
 namespace HR.Dal.Repos
 {
+    
     public class CestovnyPrikazRepository(IConnectionStringProviderService connectionStringProvider, IDopravaRepository dopravaRepository)
         : RepositoryBase(connectionStringProvider), ICestovnyPrikazRepository
     {
@@ -21,6 +22,11 @@ namespace HR.Dal.Repos
                              JOIN Stav st ON cp.stav_id = st.stav_id
                              JOIN Zamestnanec z ON cp.ucastnik = z.osobne_cislo";
 
+        /// <summary>
+        /// filter cestovny prikaz for fields osobne_cislo,krstne_meno,priezvisko,rodne_cislo
+        /// </summary>
+        /// <param name="employeeFilter">filter text max 50 chars</param>
+        /// <returns>list of filtered enities</returns>
         public async Task<List<CestovnyPrikaz>> GetFilteredAsync(string? employeeFilter = null)
         {
             var sanitizedFilter = string.IsNullOrWhiteSpace(employeeFilter) ? null : $"\"*{employeeFilter.Replace("'", "''")}*\"";
@@ -55,12 +61,13 @@ namespace HR.Dal.Repos
         }
 
 
-        public async Task<List<CestovnyPrikaz>> GetByIdAsync(int cestovnyPrikazId)
+        public async Task<CestovnyPrikaz?> GetByIdAsync(int cestovnyPrikazId)
         {
             var query = @$"{selectQueryBase} WHERE cp.cp_id= @cpId";                                  
             var getByIdCommand = new SqlCommand(query);
             getByIdCommand.Parameters.AddWithValue("@cpId", cestovnyPrikazId);
-            return await ReadRecordsAsync(getByIdCommand, MapReaderToCestovnyPrikaz);
+            var cestovnyPrikazList = await ReadRecordsAsync(getByIdCommand, MapReaderToCestovnyPrikaz);
+            return cestovnyPrikazList.FirstOrDefault();
         }
 
 
@@ -93,6 +100,7 @@ namespace HR.Dal.Repos
             await ExecuteInTransactionAsync(async (connection, transaction) =>
             {
                 // Command to insert into CestovnyPrikaz and retrieve the ID
+                //TODO see command optimilazation in update
                 using (SqlCommand addCestovnyPrikazCommand = new("INSERT INTO CestovnyPrikaz (datum_vytvorenia, ucastnik, miesto_zaciatku, miesto_konca, datum_cas_zaciatku, datum_cas_konca, stav_id) " +
                                                              "OUTPUT INSERTED.cp_id " +
                                                              "VALUES (GETDATE(), @ucastnik, @miestoZaciatku, @miestoKonca, @datumCasZaciatku, @datumCasKonca, @stavId);", connection, transaction))
@@ -128,30 +136,26 @@ namespace HR.Dal.Repos
             await ExecuteInTransactionAsync(async (connection, transaction) =>
             {
                 // Command to insert into CestovnyPrikaz and retrieve the ID
-                using (SqlCommand addCestovnyPrikazCommand = new(@"UPDATE CestovnyPrikaz 
+                //oprimized only one DB call for all operations 
+                using SqlCommand addCestovnyPrikazCommand = new(@"UPDATE CestovnyPrikaz 
                                                                     SET ucastnik = @ucastnik, 
                                                                     miesto_zaciatku = @miestoZaciatku,
                                                                     miesto_konca = @miestoKonca, 
                                                                     datum_cas_zaciatku = @datumCasZaciatku, 
                                                                     datum_cas_konca = @datumCasKonca, 
                                                                     stav_id =  @stavId
-                                                                  WHERE cp_id = @cpId", connection, transaction))
-                {
-                    addCestovnyPrikazCommand.Parameters.AddWithValue("@cpId", cestovnyPrikaz.CpId);
-                    addCestovnyPrikazCommand.Parameters.AddWithValue("@ucastnik", cestovnyPrikaz.UcastnikId);
-                    addCestovnyPrikazCommand.Parameters.AddWithValue("@miestoZaciatku", cestovnyPrikaz.MiestoZaciatkuId);
-                    addCestovnyPrikazCommand.Parameters.AddWithValue("@miestoKonca", cestovnyPrikaz.MiestoKoncaId);
-                    addCestovnyPrikazCommand.Parameters.AddWithValue("@datumCasZaciatku", cestovnyPrikaz.DatumCasZaciatku);
-                    addCestovnyPrikazCommand.Parameters.AddWithValue("@datumCasKonca", cestovnyPrikaz.DatumCasZaciatku);
-                    addCestovnyPrikazCommand.Parameters.AddWithValue("@stavId", cestovnyPrikaz.StavId);
-                    int updatedRecords = await addCestovnyPrikazCommand.ExecuteNonQueryAsync();
+                                                                  WHERE cp_id = @cpId", connection, transaction);
+                addCestovnyPrikazCommand.Parameters.AddWithValue("@cpId", cestovnyPrikaz.CpId);
+                addCestovnyPrikazCommand.Parameters.AddWithValue("@ucastnik", cestovnyPrikaz.UcastnikId);
+                addCestovnyPrikazCommand.Parameters.AddWithValue("@miestoZaciatku", cestovnyPrikaz.MiestoZaciatkuId);
+                addCestovnyPrikazCommand.Parameters.AddWithValue("@miestoKonca", cestovnyPrikaz.MiestoKoncaId);
+                addCestovnyPrikazCommand.Parameters.AddWithValue("@datumCasZaciatku", cestovnyPrikaz.DatumCasZaciatku);
+                addCestovnyPrikazCommand.Parameters.AddWithValue("@datumCasKonca", cestovnyPrikaz.DatumCasZaciatku);
+                addCestovnyPrikazCommand.Parameters.AddWithValue("@stavId", cestovnyPrikaz.StavId);
 
-                    if (updatedRecords == 0)
-                        return;
-                }
-
-                await dopravaRepository.DeleteDopravaAsync(cestovnyPrikaz.CpId, connection, transaction);
-                await dopravaRepository.InsertDopravaForCestovnyPrikazAsync(cestovnyPrikaz.CpId, connection, transaction, dopravaTypList);
+                dopravaRepository.AppendDeleteForCestovnyPrikaz(addCestovnyPrikazCommand);
+                dopravaRepository.AppendInsertForCestovnyPrikaz(addCestovnyPrikazCommand, dopravaTypList);
+                await addCestovnyPrikazCommand.ExecuteNonQueryAsync();
             });
         }
 

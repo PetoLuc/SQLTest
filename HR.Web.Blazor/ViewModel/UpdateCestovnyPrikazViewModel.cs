@@ -51,8 +51,7 @@ namespace HR.Web.Blazor.ViewModel
 
         public async Task InitAsync()
         {            
-            var cestovnyPrikaz = await cestovnyPrikazRepository.GetByIdAsync(CestovnyPrikazId);
-            var foundCestovnyPrikaz = cestovnyPrikaz.FirstOrDefault() ?? throw new InvalidOperationException($"TODO cestovny prikaz not foud by {CestovnyPrikazId}");
+            var foundCestovnyPrikaz = await cestovnyPrikazRepository.GetByIdAsync(CestovnyPrikazId) ?? throw new InvalidOperationException($"TODO cestovny prikaz not foud by {CestovnyPrikazId}");            
 
             MestoList = await mestoRepository.GetAllMestoForSelectAsync();
             ZamestnanecList = await zamestnanecRepository.GetAllZamestnanciAsync();
