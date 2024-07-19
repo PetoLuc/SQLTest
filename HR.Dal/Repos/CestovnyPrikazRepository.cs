@@ -8,11 +8,10 @@ using System.Text;
 
 namespace HR.Dal.Repos
 {
-    
+
     public class CestovnyPrikazRepository(IConnectionStringProviderService connectionStringProvider, IDopravaRepository dopravaRepository)
         : RepositoryBase(connectionStringProvider), ICestovnyPrikazRepository
     {
-
         private const string selectQueryBase = @"SELECT cp.*, mz.nazov_mesta AS mz_nazov_mesta, mz.stat AS mz_stat, mz.zemepisna_sirka AS mz_zemepisna_sirka, mz.zemepisna_dlzka AS mz_zemepisna_dlzka,
                                 mk.nazov_mesta AS mk_nazov_mesta, mk.stat AS mk_stat, mk.zemepisna_sirka AS mk_zemepisna_sirka, mk.zemepisna_dlzka AS mk_zemepisna_dlzka,                                
                                 z.krstne_meno, z.priezvisko, z.datum_narodenia, z.rodne_cislo
@@ -31,7 +30,6 @@ namespace HR.Dal.Repos
         {
             var sanitizedFilter = string.IsNullOrWhiteSpace(employeeFilter) ? null : $"\"*{employeeFilter.Replace("'", "''")}*\"";
 
-
             string query = selectQueryBase;
             if (sanitizedFilter != null)
             {
@@ -45,7 +43,6 @@ namespace HR.Dal.Repos
             }
 
             var command = new SqlCommand(query);
-
             //add sanitized parameter value
             if (sanitizedFilter != null)
             {
@@ -63,7 +60,7 @@ namespace HR.Dal.Repos
 
         public async Task<CestovnyPrikaz?> GetByIdAsync(int cestovnyPrikazId)
         {
-            var query = @$"{selectQueryBase} WHERE cp.cp_id= @cpId";                                  
+            var query = @$"{selectQueryBase} WHERE cp.cp_id= @cpId";
             var getByIdCommand = new SqlCommand(query);
             getByIdCommand.Parameters.AddWithValue("@cpId", cestovnyPrikazId);
             var cestovnyPrikazList = await ReadRecordsAsync(getByIdCommand, MapReaderToCestovnyPrikaz);
@@ -88,7 +85,7 @@ namespace HR.Dal.Repos
                 await deleteCestovnyPrikazCommand.ExecuteNonQueryAsync();
             });
         }
-            
+
         public async Task InsertAsync(CestovnyPrikaz cestovnyPrikaz, List<DopravaTyp> dopravaTypList)
         {
             ArgumentNullException.ThrowIfNull(cestovnyPrikaz);
@@ -173,7 +170,7 @@ namespace HR.Dal.Repos
                 MiestoKoncaId = reader.GetInt32("miesto_konca"),
                 DatumCasZaciatku = reader.GetDateTime("datum_cas_zaciatku"),
                 DatumCasKonca = reader.GetDateTime("datum_cas_konca"),
-                StavId = reader.GetInt32("stav_id"),                
+                StavId = reader.GetInt32("stav_id"),
             };
             //states are constants
             cestovnyPrikaz.Stav = Stav.GetAll().Single(s => s.StavId == cestovnyPrikaz.StavId);
