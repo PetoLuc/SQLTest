@@ -27,7 +27,7 @@
     private async Task UpdateClick()
     {
         await Model.SaveAsync();
-        this.Close();
+        //this.Close();
         await OnDataChangedModal.InvokeAsync(true);
     }
     #endregion eventHandlers
@@ -65,7 +65,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Pridaj cestovný výkaz</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Cestovný výkaz</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="Close"></button>
             </div>
             <div class="modal-body">

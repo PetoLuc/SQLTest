@@ -128,9 +128,14 @@ namespace HR.Dal.Repos
             await ExecuteInTransactionAsync(async (connection, transaction) =>
             {
                 // Command to insert into CestovnyPrikaz and retrieve the ID
-                using (SqlCommand addCestovnyPrikazCommand = new("UPDATE CestovnyPrikaz (ucastnik, miesto_zaciatku, miesto_konca, datum_cas_zaciatku, datum_cas_konca, stav_id) " +
-                                                             "VALUES (@ucastnik, @miestoZaciatku, @miestoKonca, @datumCasZaciatku, @datumCasKonca, @stavId);" +
-                                                             "WHERE cp_id = @cpId", connection, transaction))
+                using (SqlCommand addCestovnyPrikazCommand = new(@"UPDATE CestovnyPrikaz 
+                                                                    SET ucastnik = @ucastnik, 
+                                                                    miesto_zaciatku = @miestoZaciatku,
+                                                                    miesto_konca = @miestoKonca, 
+                                                                    datum_cas_zaciatku = @datumCasZaciatku, 
+                                                                    datum_cas_konca = @datumCasKonca, 
+                                                                    stav_id =  @stavId
+                                                                  WHERE cp_id = @cpId", connection, transaction))
                 {
                     addCestovnyPrikazCommand.Parameters.AddWithValue("@cpId", cestovnyPrikaz.CpId);
                     addCestovnyPrikazCommand.Parameters.AddWithValue("@ucastnik", cestovnyPrikaz.UcastnikId);
@@ -164,8 +169,7 @@ namespace HR.Dal.Repos
                 MiestoKoncaId = reader.GetInt32("miesto_konca"),
                 DatumCasZaciatku = reader.GetDateTime("datum_cas_zaciatku"),
                 DatumCasKonca = reader.GetDateTime("datum_cas_konca"),
-                StavId = reader.GetInt32("stav_id"),
-                // Add other fields as needed
+                StavId = reader.GetInt32("stav_id"),                
             };
             //states are constants
             cestovnyPrikaz.Stav = Stav.GetAll().Single(s => s.StavId == cestovnyPrikaz.StavId);

@@ -33,11 +33,10 @@
         </button>
     </div>
 
-
-    <div class="form-inline">
-        <label class="form-label">Search</label>
-        <input id="searchInput" maxlength="50" type="text" @bind="Model.SearchTerm" placeholder="Search for employee" class="form-control" />
-        <button class="btn btn-primary ms-2" @onclick="FilterAction">Filter</button>
+   
+    <div class="mb-3">        
+        <input id="searchInput" maxlength="50" type="text" @bind="Model.SearchTerm" placeholder="Search by employee" class="form-control mb-1" />
+        <button class="btn btn-primary" @onclick="FilterAction">Filter</button>
     </div>
 
     @if (Model.CestovnePrikazy?.Any() == true)
