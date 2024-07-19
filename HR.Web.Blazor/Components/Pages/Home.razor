@@ -14,8 +14,18 @@
     {
         await Model.LoadCestovnePrikazyAsync();
     }
-    private AddCestovnyPrikazDialog? AddCestovnyPrikazDialog { get; set; }    
+    private AddCestovnyPrikazDialog? AddCestovnyPrikazDialog { get; set; }
     private UpdateCestovnyPrikazDialog? UpdateCestovnyPrikazDialog { get; set; }
+
+    private async Task FilterChanged()
+    {
+        if (string.IsNullOrWhiteSpace(Model.SearchTerm) || Model.SearchTerm.Length > 2)
+    {
+            await FilterAction();
+            await Task.Delay(300);
+        }
+    }
+
 
 }
 <PageTitle>Home</PageTitle>
@@ -35,7 +45,7 @@
 
    
     <div class="mb-3">        
-        <input id="searchInput" maxlength="50" type="text" @bind="Model.SearchTerm" placeholder="fulltext search for employee" class="form-control mb-1" />
+        <input id="searchInput" maxlength="50" type="text" @bind="Model.SearchTerm" @bind:event="oninput" @onkeyup="FilterChanged" placeholder="full text search for employee" class="form-control mb-1" />
         <button class="btn btn-primary" @onclick="FilterAction">Filter</button>
     </div>
 

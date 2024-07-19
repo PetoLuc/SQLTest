@@ -54,14 +54,14 @@ CREATE TABLE Mesto (
 
 -- Číselníková entita Stav
 CREATE TABLE Stav (
-    stav_id tinyint IDENTITY(1,1) PRIMARY KEY,
+    stav_id int IDENTITY(1,1) PRIMARY KEY,
     kod_stavu VARCHAR(10) NOT NULL UNIQUE,
     nazov_stavu VARCHAR(20) NOT NULL UNIQUE
 );
 
 -- Číselníková entita DopravaTyp
 CREATE TABLE DopravaTyp (
-    doprava_typ_id tinyint IDENTITY(1,1) PRIMARY KEY,
+    doprava_typ_id int IDENTITY(1,1) PRIMARY KEY,
     kod_typu VARCHAR(10) NOT NULL UNIQUE,
     nazov_typu VARCHAR(20) NOT NULL UNIQUE
 );
@@ -75,7 +75,7 @@ CREATE TABLE CestovnyPrikaz (
     miesto_konca INT NOT NULL,
     datum_cas_zaciatku DATETIME NOT NULL,
     datum_cas_konca DATETIME NOT NULL,
-    stav_id tinyint NOT NULL,
+    stav_id int NOT NULL,
     FOREIGN KEY (ucastnik) REFERENCES Zamestnanec(osobne_cislo),
     FOREIGN KEY (miesto_zaciatku) REFERENCES Mesto(mesto_id),
     FOREIGN KEY (miesto_konca) REFERENCES Mesto(mesto_id),
@@ -86,7 +86,7 @@ CREATE TABLE CestovnyPrikaz (
 CREATE TABLE Doprava (
     doprava_id INT IDENTITY(1,1) PRIMARY KEY,
     cp_id INT NOT NULL,
-    doprava_typ_id tinyint NOT NULL,
+    doprava_typ_id int NOT NULL,
     FOREIGN KEY (cp_id) REFERENCES CestovnyPrikaz(cp_id),
     FOREIGN KEY (doprava_typ_id) REFERENCES DopravaTyp(doprava_typ_id)
 );
