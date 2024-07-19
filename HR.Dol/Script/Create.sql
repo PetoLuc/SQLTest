@@ -75,7 +75,7 @@ CREATE TABLE CestovnyPrikaz (
     miesto_konca INT NOT NULL,
     datum_cas_zaciatku DATETIME NOT NULL,
     datum_cas_konca DATETIME NOT NULL,
-    stav_id INT NOT NULL,
+    stav_id tinyint NOT NULL,
     FOREIGN KEY (ucastnik) REFERENCES Zamestnanec(osobne_cislo),
     FOREIGN KEY (miesto_zaciatku) REFERENCES Mesto(mesto_id),
     FOREIGN KEY (miesto_konca) REFERENCES Mesto(mesto_id),
@@ -86,7 +86,7 @@ CREATE TABLE CestovnyPrikaz (
 CREATE TABLE Doprava (
     doprava_id INT IDENTITY(1,1) PRIMARY KEY,
     cp_id INT NOT NULL,
-    doprava_typ_id INT NOT NULL,
+    doprava_typ_id tinyint NOT NULL,
     FOREIGN KEY (cp_id) REFERENCES CestovnyPrikaz(cp_id),
     FOREIGN KEY (doprava_typ_id) REFERENCES DopravaTyp(doprava_typ_id)
 );
